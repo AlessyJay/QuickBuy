@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id        String  @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  password  String
+  image     String?
+  address   String?
+  city      String?
+  state     String?
+  zip       String?
+  country   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order    Order[]
+  wishList WishList[]
+  Comments Comments[]
+  Session  Session[]
+
+  @@map("user")
+}
+
+model Order {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("order")
+}
+
+model WishList {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("wishList")
+}
+
+model Products {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float
+  description String
+  colour      String
+  size        String
+  rating      String
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId String
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  comments   Comments[]
+
+  @@map("products")
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Products    Products[]
+
+  @@map("category")
+}
+
+model Comments {
+  id      String  @id @default(cuid())
+  comment String?
+
+  Products   Products? @relation(fields: [productsId], references: [id])
+  productsId String?
+  userId     String
+  commentor  User?     @relation(fields: [userId], references: [id])
+}
+
+model Session {
+  id       String   @id @default(cuid())
+  userId   String
+  expireAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
