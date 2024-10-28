@@ -1,7 +1,7 @@
-import React from "react";
+import Products from "../../components/Products";
 
 const Men = () => {
-  return <div>Men</div>;
+  return <Products cate="men" />;
 };
 
 export default Men;

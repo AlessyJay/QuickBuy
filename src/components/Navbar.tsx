@@ -51,10 +51,10 @@ export default function Navbar() {
               <Search className="size-5" />
               <span className="sr-only">Search</span>
             </button>
-            <button>
+            <Link to="profile">
               <User className="size-5" />
               <span className="sr-only">Account</span>
-            </button>
+            </Link>
             <button>
               <ShoppingBag className="h-5 w-5" />
               <span className="sr-only">Cart</span>

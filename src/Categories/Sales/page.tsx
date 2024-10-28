@@ -1,5 +1,7 @@
+import Products from "../../components/Products";
+
 const Sales = () => {
-  return <div>Sales</div>;
+  return <Products cate="sales" />;
 };
 
 export default Sales;

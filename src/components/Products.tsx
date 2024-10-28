@@ -1,13 +1,35 @@
 import { ChevronDown, Star } from "lucide-react";
 import { useState } from "react";
-import { Products as MockProducts } from "../services/Products";
-import { Button } from "@chakra-ui/react";
-import { Checkbox } from "@chakra-ui/react";
-import { Slider } from "@chakra-ui/react";
+import { WomenProducts } from "../services/Products";
+import {
+  Button,
+  Checkbox,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  RangeSlider,
+  RangeSliderTrack,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+  Input,
+} from "@chakra-ui/react";
 
 const Products = ({ cate }: { cate: string }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [priceRange, setPriceRange] = useState<string>("");
+  const [priceRange, setPriceRange] = useState<number[]>([0, 5000]);
+  const [sortOption, setSortOption] = useState<string>("");
+
+  const handleSortOptionChange = (option: string) => {
+    setSortOption(option);
+    // Add your sorting logic here based on the option selected
+  };
+
+  const handleInputChange = (index: number, value: string) => {
+    const newRange = [...priceRange];
+    newRange[index] = Math.min(Math.max(Number(value), 0), 5000); // Constrain within 0-5000
+    setPriceRange(newRange);
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <main className="container flex-1 py-8">
@@ -34,10 +56,38 @@ const Products = ({ cate }: { cate: string }) => {
             </div>
             <div>
               <h2 className="mb-2 text-lg font-semibold">Price Range</h2>
-              <Slider max={5000} step={1} defaultValue={0} className="mb-2" />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>${priceRange[0]}</span>
-                <span>${priceRange[1]}</span>
+              <RangeSlider
+                defaultValue={[0, 5000]}
+                min={0}
+                max={5000}
+                step={10}
+                onChangeEnd={(val: never) => setPriceRange(val)}
+              >
+                <RangeSliderTrack>
+                  <RangeSliderFilledTrack />
+                </RangeSliderTrack>
+                <RangeSliderThumb index={0} />
+                <RangeSliderThumb index={1} />
+              </RangeSlider>
+              <div className="mt-2 flex justify-between gap-10 text-sm text-gray-500">
+                <Input
+                  value={priceRange[0]}
+                  onChange={(e) => handleInputChange(0, e.target.value)}
+                  size="sm"
+                  type="number"
+                  min={0}
+                  max={5000}
+                  placeholder="Min"
+                />
+                <Input
+                  value={priceRange[1]}
+                  onChange={(e) => handleInputChange(1, e.target.value)}
+                  size="sm"
+                  type="number"
+                  min={0}
+                  max={5000}
+                  placeholder="Max"
+                />
               </div>
             </div>
             <div>
@@ -76,13 +126,33 @@ const Products = ({ cate }: { cate: string }) => {
               </p>
               <div className="flex items-center">
                 <span className="mr-2 text-sm text-gray-500">Sort by:</span>
-                <Button variant="outline" size="sm">
-                  Featured <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={<ChevronDown />}
+                    variant="outline"
+                    size="sm"
+                  >
+                    {sortOption || "Select"}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem
+                      onClick={() => handleSortOptionChange("Alphabetically")}
+                    >
+                      Alphabetically
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSortOptionChange("Newest")}>
+                      Newest
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSortOptionChange("Oldest")}>
+                      Oldest
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {MockProducts.map((item) => (
+              {WomenProducts.map((item) => (
                 <div key={item.id} className="group">
                   <div className="aspect-w-1 aspect-h-1 xl:aspect-w-7 xl:aspect-h-8 w-full overflow-hidden rounded-lg bg-gray-200">
                     <img
@@ -103,7 +173,12 @@ const Products = ({ cate }: { cate: string }) => {
                       </span>
                     </div>
                   </div>
-                  <Button className="mt-2 w-full bg-orange-500 text-white hover:bg-orange-600">
+                  <Button
+                    bg="orange.500"
+                    color="white"
+                    _hover={{ bg: "orange.600" }}
+                    className="mt-2 w-full"
+                  >
                     Add to Cart
                   </Button>
                 </div>
