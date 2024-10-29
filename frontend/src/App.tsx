@@ -7,6 +7,8 @@ import Accessories from "./Categories/Accessories/page.tsx";
 import Sales from "./Categories/Sales/page.tsx";
 import Gifts from "./Categories/Gifts/page.tsx";
 import Profile from "./Categories/Profile/page.tsx";
+import Login from "./Authentication/Login.tsx";
+import Register from "./Authentication/Register.tsx";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/sales" element={<Sales />} />
           <Route path="/gifts" element={<Gifts />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Layout>
     </Router>
